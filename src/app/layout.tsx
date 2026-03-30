@@ -18,9 +18,23 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Wepink Angola | Perfumaria de Luxo em Luanda",
+  title: "Wepink Angola :: o seu mundo rosa em Angola",
   description:
     "Descubra fragrâncias exclusivas que capturam a sofisticação moderna. Perfumes premium com entrega em toda Luanda. Pagamentos via Multicaixa.",
+  openGraph: {
+    title: "Wepink Angola :: o seu mundo rosa em Angola",
+    description:
+      "Descubra fragrâncias exclusivas que capturam a sofisticação moderna. Perfumes premium com entrega em toda Luanda.",
+    images: [{ url: "/images/wepinkangola.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wepink Angola :: o seu mundo rosa em Angola",
+    description:
+      "Descubra fragrâncias exclusivas que capturam a sofisticação moderna. Perfumes premium com entrega em toda Luanda.",
+    images: ["/images/wepinkangola.png"],
+  },
 };
 
 export default function RootLayout({
