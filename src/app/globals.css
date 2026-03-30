@@ -1,0 +1,254 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surface hierarchy */
+  --color-surface: #fcf9f8;
+  --color-surface-dim: #dcd9d9;
+  --color-surface-bright: #fcf9f8;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container: #f0eded;
+  --color-surface-container-high: #eae7e7;
+  --color-surface-container-highest: #e5e2e1;
+  --color-surface-variant: #e5e2e1;
+  --color-surface-tint: #b71656;
+
+  /* Primary */
+  --color-primary: #b71656;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffa0b6;
+  --color-on-primary-container: #970043;
+  --color-primary-fixed: #ffd9df;
+  --color-primary-fixed-dim: #ffb1c2;
+  --color-on-primary-fixed: #3f0018;
+  --color-on-primary-fixed-variant: #8f0040;
+  --color-inverse-primary: #ffb1c2;
+
+  /* Secondary */
+  --color-secondary: #685b5f;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #f0dee3;
+  --color-on-secondary-container: #6e6165;
+  --color-secondary-fixed: #f0dee3;
+  --color-secondary-fixed-dim: #d3c2c7;
+  --color-on-secondary-fixed: #22191d;
+  --color-on-secondary-fixed-variant: #4f4448;
+
+  /* Tertiary */
+  --color-tertiary: #7d535c;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #e3aeb9;
+  --color-on-tertiary-container: #684049;
+  --color-tertiary-fixed: #ffd9e0;
+  --color-tertiary-fixed-dim: #efb8c3;
+  --color-on-tertiary-fixed: #31111a;
+  --color-on-tertiary-fixed-variant: #633b45;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* On surfaces */
+  --color-on-surface: #1c1b1b;
+  --color-on-surface-variant: #524345;
+  --color-on-background: #1c1b1b;
+  --color-background: #fcf9f8;
+  --color-outline: #847375;
+  --color-outline-variant: #d6c2c4;
+  --color-inverse-surface: #313030;
+  --color-inverse-on-surface: #f3f0ef;
+
+  /* Fonts */
+  --font-headline: "Noto Serif", serif;
+  --font-body: "Manrope", sans-serif;
+  --font-label: "Manrope", sans-serif;
+
+  /* Border radius */
+  --radius-sm: 0.125rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+::selection {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.font-serif,
+h1,
+h2,
+h3 {
+  font-family: var(--font-headline);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+}
+
+.signature-gradient {
+  background: linear-gradient(135deg, #b71656 0%, #ffa0b6 100%);
+}
+
+/* ── Keyframe Animations ── */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-image-ken-burns {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+
+/* ── Animation Utility Classes ── */
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-hero-image {
+  animation: hero-image-ken-burns 8s ease-out both;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ── Scroll Reveal ── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Nav Link Hover Underline ── */
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: var(--color-primary);
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link-active::after {
+  width: 100%;
+}
+
+/* ── Button Shine Effect ── */
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-shine:hover::after {
+  left: 120%;
+}
+
+/* ── Cart Drawer Overlay ── */
+
+.cart-overlay {
+  animation: fade-in 0.3s ease both;
+}
+
+.cart-panel {
+  animation: slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Smooth scroll ── */
+
+html {
+  scroll-behavior: smooth;
+}
