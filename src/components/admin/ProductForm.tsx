@@ -121,7 +121,7 @@ export function ProductForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Basic Info */}
-      <section className="bg-surface-container-lowest p-8 rounded-xl space-y-6">
+      <section className="bg-surface-container-lowest p-5 lg:p-8 rounded-xl space-y-6">
         <h2 className="text-lg font-[family-name:var(--font-headline)] text-on-surface">
           Informações Básicas
         </h2>
@@ -258,7 +258,7 @@ export function ProductForm({
       </section>
 
       {/* Image */}
-      <section className="bg-surface-container-lowest p-8 rounded-xl space-y-6">
+      <section className="bg-surface-container-lowest p-5 lg:p-8 rounded-xl space-y-6">
         <h2 className="text-lg font-[family-name:var(--font-headline)] text-on-surface">
           Imagem
         </h2>
@@ -298,7 +298,7 @@ export function ProductForm({
       </section>
 
       {/* Sizes & Pricing */}
-      <section className="bg-surface-container-lowest p-8 rounded-xl space-y-6">
+      <section className="bg-surface-container-lowest p-5 lg:p-8 rounded-xl space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-[family-name:var(--font-headline)] text-on-surface">
             Tamanhos e Preços de Venda
@@ -334,62 +334,72 @@ export function ProductForm({
             {form.sizes.map((size, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 p-4 bg-surface-container-low rounded-lg"
+                className="p-4 bg-surface-container-low rounded-lg"
               >
-                <div className="flex-1 space-y-1">
-                  <label className="text-[10px] uppercase tracking-widest text-secondary">
-                    Label
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={size.label}
-                    onChange={(e) => updateSize(index, "label", e.target.value)}
-                    placeholder="100ml"
-                    className="w-full bg-surface-container-lowest rounded px-3 py-2 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20"
-                  />
+                <div className="flex items-center justify-between mb-3 lg:hidden">
+                  <span className="text-xs font-bold text-secondary">Tamanho {index + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeSize(index)}
+                    className="p-1 text-secondary hover:text-error transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-lg">close</span>
+                  </button>
                 </div>
-                <div className="w-28 space-y-1">
-                  <label className="text-[10px] uppercase tracking-widest text-secondary">
-                    ML
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min={1}
-                    value={size.ml || ""}
-                    onChange={(e) =>
-                      updateSize(index, "ml", parseInt(e.target.value) || 0)
-                    }
-                    placeholder="100"
-                    className="w-full bg-surface-container-lowest rounded px-3 py-2 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20"
-                  />
+                <div className="grid grid-cols-3 gap-3 lg:flex lg:items-center lg:gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-secondary">
+                      Label
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={size.label}
+                      onChange={(e) => updateSize(index, "label", e.target.value)}
+                      placeholder="100ml"
+                      className="w-full bg-surface-container-lowest rounded px-3 py-2 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-secondary">
+                      ML
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min={1}
+                      value={size.ml || ""}
+                      onChange={(e) =>
+                        updateSize(index, "ml", parseInt(e.target.value) || 0)
+                      }
+                      placeholder="100"
+                      className="w-full bg-surface-container-lowest rounded px-3 py-2 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-secondary">
+                      Preço (AOA)
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min={0}
+                      value={size.price || ""}
+                      onChange={(e) =>
+                        updateSize(index, "price", parseInt(e.target.value) || 0)
+                      }
+                      placeholder="45000"
+                      className="w-full bg-surface-container-lowest rounded px-3 py-2 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeSize(index)}
+                    className="hidden lg:block p-2 text-secondary hover:text-error transition-colors mt-5"
+                  >
+                    <span className="material-symbols-outlined text-xl">close</span>
+                  </button>
                 </div>
-                <div className="w-36 space-y-1">
-                  <label className="text-[10px] uppercase tracking-widest text-secondary">
-                    Preço Venda (AOA)
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min={0}
-                    value={size.price || ""}
-                    onChange={(e) =>
-                      updateSize(index, "price", parseInt(e.target.value) || 0)
-                    }
-                    placeholder="45000"
-                    className="w-full bg-surface-container-lowest rounded px-3 py-2 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeSize(index)}
-                  className="p-2 text-secondary hover:text-error transition-colors mt-5"
-                >
-                  <span className="material-symbols-outlined text-xl">
-                    close
-                  </span>
-                </button>
               </div>
             ))}
           </div>
@@ -397,7 +407,7 @@ export function ProductForm({
       </section>
 
       {/* Scent Profile */}
-      <section className="bg-surface-container-lowest p-8 rounded-xl space-y-6">
+      <section className="bg-surface-container-lowest p-5 lg:p-8 rounded-xl space-y-6">
         <h2 className="text-lg font-[family-name:var(--font-headline)] text-on-surface">
           Perfil Olfativo
         </h2>

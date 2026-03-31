@@ -81,9 +81,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-[family-name:var(--font-headline)] text-on-surface mb-1">
+          <h1 className="text-2xl lg:text-3xl font-[family-name:var(--font-headline)] text-on-surface mb-1">
             Dashboard
           </h1>
           <p className="text-secondary text-sm">
@@ -92,15 +92,15 @@ export default function AdminDashboard() {
         </div>
         <Link
           href="/admin/produtos/novo"
-          className="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm flex items-center gap-2 hover:opacity-90 transition-all active:scale-95"
+          className="bg-primary text-on-primary px-4 lg:px-6 py-3 rounded-lg font-bold text-sm flex items-center gap-2 hover:opacity-90 transition-all active:scale-95 flex-shrink-0"
         >
           <span className="material-symbols-outlined text-xl">add</span>
-          Novo Produto
+          <span className="hidden sm:inline">Novo Produto</span>
         </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {cards.map((card) => (
           <div
             key={card.label}
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
                 </span>
               </div>
             </div>
-            <p className="text-2xl font-[family-name:var(--font-headline)] text-on-surface">
+            <p className="text-lg lg:text-2xl font-[family-name:var(--font-headline)] text-on-surface break-all">
               {card.value}
             </p>
           </div>

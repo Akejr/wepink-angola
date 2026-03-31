@@ -12,7 +12,7 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-surface-container-low">
       <Sidebar />
-      <main className="ml-64 p-8">{children}</main>
+      <main className="pt-16 px-4 pb-8 lg:pt-0 lg:ml-64 lg:p-8">{children}</main>
     </div>
   );
 }

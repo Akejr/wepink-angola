@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "dashboard" },
@@ -13,16 +14,17 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
     return pathname.startsWith(href);
   };
 
-  return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-[#1c1b1b] text-white z-40 flex flex-col">
+  const navContent = (
+    <>
       <div className="p-6">
-        <Link href="/admin" className="block">
+        <Link href="/admin" className="block" onClick={() => setOpen(false)}>
           <Image
             src="/images/logo.png"
             alt="Wepink"
@@ -41,6 +43,7 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={() => setOpen(false)}
             className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
               isActive(item.href)
                 ? "bg-primary text-white"
@@ -64,6 +67,52 @@ export function Sidebar() {
           Ver Loja
         </Link>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-[#1c1b1b] flex items-center justify-between px-4 py-3">
+        <button onClick={() => setOpen(true)} className="text-white/70 p-1">
+          <span className="material-symbols-outlined text-2xl">menu</span>
+        </button>
+        <Image
+          src="/images/logo.png"
+          alt="Wepink"
+          width={80}
+          height={28}
+          className="h-6 w-auto object-contain brightness-0 invert opacity-80"
+        />
+        <div className="w-9" />
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {open && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-50"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside
+        className={`lg:hidden fixed left-0 top-0 h-full w-64 bg-[#1c1b1b] text-white z-50 flex flex-col transition-transform duration-300 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="absolute top-4 right-4">
+          <button onClick={() => setOpen(false)} className="text-white/50 p-1">
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        {navContent}
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-[#1c1b1b] text-white z-40 flex-col">
+        {navContent}
+      </aside>
+    </>
   );
 }
