@@ -97,6 +97,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#b71656" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="google-site-verification" content="2kdIw-NajFadBeWtXKsmVC1exuQ7kfWKz7j8kdFjm1M" />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
