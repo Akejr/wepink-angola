@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { getProductBySlug, formatPrice } from "@/lib/products";
+import { useState, useEffect, useRef } from "react";
+import { getProductBySlug, getProducts, formatPrice } from "@/lib/products";
 import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import { useScrollRevealAll } from "@/hooks/useScrollReveal";
+import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 
 export default function ProductPage() {
   const params = useParams();
@@ -18,6 +19,8 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const carouselRef = useRef<HTMLDivElement>(null);
   useScrollRevealAll();
 
   useEffect(() => {
@@ -28,6 +31,31 @@ export default function ProductPage() {
       });
     }
   }, [slug]);
+
+  // Fetch related products
+  useEffect(() => {
+    getProducts().then((all) => {
+      const others = all.filter((p) => p.slug !== slug);
+      setRelatedProducts(others);
+    });
+  }, [slug]);
+
+  // Auto-scroll carousel
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || relatedProducts.length === 0) return;
+
+    const interval = setInterval(() => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 2) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: 220, behavior: "smooth" });
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [relatedProducts]);
 
   if (loading) {
     return (
@@ -80,6 +108,21 @@ export default function ProductPage() {
 
   return (
     <main className="pt-[72px] pb-20">
+      <ProductJsonLd
+        name={product.name}
+        description={product.description}
+        image={product.imageUrl}
+        price={selectedSize.price}
+        slug={product.slug}
+        badge={product.badge}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://www.wepinkangola.com" },
+          { name: "Fragrâncias", url: "https://www.wepinkangola.com/#shop" },
+          { name: product.name, url: `https://www.wepinkangola.com/produto/${product.slug}` },
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-6">
         <nav className="py-8 mb-4 animate-fade-in">
           <ol className="flex items-center space-x-2 text-xs font-[family-name:var(--font-label)] tracking-widest text-secondary uppercase">
@@ -128,12 +171,32 @@ export default function ProductPage() {
           <div className="lg:col-span-6 lg:sticky lg:top-32">
             <div className="space-y-8">
               <div className="animate-fade-up delay-100">
-                <h1 className="font-[family-name:var(--font-headline)] text-5xl md:text-6xl text-primary mb-4 leading-tight">
+                <h1 className="font-[family-name:var(--font-headline)] text-5xl md:text-6xl text-primary mb-3 leading-tight">
                   {product.name}
                 </h1>
-                <p className="font-[family-name:var(--font-headline)] text-2xl text-on-surface">
-                  {formatPrice(selectedSize.price)} AOA
-                </p>
+                {product.scentProfile.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="font-[family-name:var(--font-label)] text-[10px] tracking-widest uppercase text-secondary font-bold mb-2">
+                      Perfil Olfativo
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {product.scentProfile.map((scent) => (
+                        <span
+                          key={scent}
+                          className="bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded-full text-[11px] font-medium"
+                        >
+                          {scent}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="inline-flex items-baseline gap-2 bg-primary/5 px-5 py-3 rounded-xl">
+                  <span className="font-[family-name:var(--font-headline)] text-3xl md:text-4xl text-primary font-bold">
+                    {formatPrice(selectedSize.price)}
+                  </span>
+                  <span className="text-sm text-primary/70 font-medium">AOA</span>
+                </div>
               </div>
 
               <div className="space-y-4 animate-fade-up delay-200">
@@ -182,50 +245,6 @@ export default function ProductPage() {
                 {addedToCart ? "Adicionado!" : "Adicionar ao Carrinho"}
               </button>
 
-              <div className="pt-8 animate-fade-up delay-500">
-                <h3 className="font-[family-name:var(--font-label)] text-xs tracking-widest uppercase text-secondary font-bold mb-4">
-                  Perfil Olfativo
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.scentProfile.map((scent) => (
-                    <span
-                      key={scent}
-                      className="bg-secondary-fixed text-on-secondary-fixed px-4 py-2 rounded-full text-xs font-medium hover:bg-primary hover:text-on-primary transition-all duration-300 cursor-default"
-                    >
-                      {scent}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-12 p-6 bg-surface-container-low rounded-lg space-y-4 hover:bg-surface-container transition-colors duration-300">
-                <div className="flex items-center gap-3 text-primary">
-                  <span className="material-symbols-outlined">payments</span>
-                  <h3 className="font-[family-name:var(--font-headline)] font-bold">
-                    Pagamento Multicaixa
-                  </h3>
-                </div>
-                <div className="text-sm text-on-surface-variant space-y-2">
-                  <p className="flex gap-2">
-                    <span className="font-bold text-primary">1.</span>{" "}
-                    Selecione &quot;Pagamento por Referência&quot; no seu ATM ou App.
-                  </p>
-                  <p className="flex gap-2">
-                    <span className="font-bold text-primary">2.</span> Insira a
-                    entidade e referência geradas no checkout.
-                  </p>
-                  <p className="flex gap-2">
-                    <span className="font-bold text-primary">3.</span>{" "}
-                    Confirmação imediata após o pagamento.
-                  </p>
-                </div>
-                <div className="pt-2">
-                  <span className="inline-flex items-center gap-2 text-[10px] font-bold text-secondary uppercase tracking-widest">
-                    <span className="material-symbols-outlined text-sm">verified_user</span>
-                    Seguro & Verificado
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -258,21 +277,97 @@ export default function ProductPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-primary text-on-primary p-10 rounded-xl flex flex-col justify-between min-h-[280px] reveal hover:shadow-lg hover:shadow-primary/15 transition-shadow duration-500" data-reveal-delay="150">
-              <span className="material-symbols-outlined text-5xl opacity-50">auto_awesome</span>
-              <div>
-                <h3 className="font-[family-name:var(--font-headline)] text-2xl mb-4">
-                  Entrega Grátis em Luanda
-                </h3>
-                <p className="text-sm opacity-90 leading-relaxed">
-                  Para pedidos superiores a 100.000 AOA, receba o seu perfume em
-                  casa sem custos adicionais.
-                </p>
-              </div>
+            <div className="bg-primary text-on-primary p-10 rounded-xl flex flex-col min-h-[280px] reveal hover:shadow-lg hover:shadow-primary/15 transition-shadow duration-500" data-reveal-delay="150">
+              <h3 className="font-[family-name:var(--font-headline)] text-3xl text-on-primary mb-6">
+                Entregas em Luanda
+              </h3>
+              <p className="text-sm opacity-90 leading-relaxed">
+                Receba o seu perfume em casa no prazo de 24 horas. Pagamentos seguros via Multicaixa ou Multicaixa Express.
+              </p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* You might also like */}
+      {relatedProducts.length > 0 && (
+        <section className="py-20 bg-gradient-to-b from-surface-container-low to-surface">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-end justify-between mb-10 reveal" data-reveal-delay="0">
+              <div>
+                <h2 className="font-[family-name:var(--font-headline)] text-3xl text-primary mb-2">
+                  Você também pode gostar
+                </h2>
+                <p className="text-secondary text-sm">Fragrâncias selecionadas para si.</p>
+              </div>
+              <div className="hidden md:flex gap-2">
+                <button
+                  onClick={() => carouselRef.current?.scrollBy({ left: -300, behavior: "smooth" })}
+                  className="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary hover:text-primary hover:bg-primary/5 transition-all"
+                >
+                  <span className="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button
+                  onClick={() => carouselRef.current?.scrollBy({ left: 300, behavior: "smooth" })}
+                  className="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary hover:text-primary hover:bg-primary/5 transition-all"
+                >
+                  <span className="material-symbols-outlined">chevron_right</span>
+                </button>
+              </div>
+            </div>
+
+            <div
+              ref={carouselRef}
+              className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {relatedProducts.map((rp, i) => {
+                const bgColors = [
+                  "from-pink-50 to-rose-100",
+                  "from-amber-50 to-orange-100",
+                  "from-violet-50 to-purple-100",
+                  "from-sky-50 to-blue-100",
+                  "from-emerald-50 to-teal-100",
+                  "from-fuchsia-50 to-pink-100",
+                ];
+                const bg = bgColors[i % bgColors.length];
+
+                return (
+                  <Link
+                    key={rp.id}
+                    href={`/produto/${rp.slug}`}
+                    className="flex-shrink-0 w-[200px] md:w-[240px] snap-start group"
+                  >
+                    <div className={`aspect-[3/4] rounded-xl overflow-hidden relative bg-gradient-to-br ${bg}`}>
+                      <Image
+                        src={rp.imageUrl}
+                        alt={rp.imageAlt}
+                        fill
+                        sizes="240px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      {rp.badge && (
+                        <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded text-[8px] font-bold tracking-widest text-primary">
+                          {rp.badge}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-3 px-1">
+                      <h3 className="font-[family-name:var(--font-headline)] text-sm text-on-surface group-hover:text-primary transition-colors truncate">
+                        {rp.name}
+                      </h3>
+                      <p className="text-xs text-secondary truncate">{rp.subtitle}</p>
+                      <p className="font-[family-name:var(--font-headline)] text-primary text-sm mt-1">
+                        {formatPrice(rp.price)} AOA
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

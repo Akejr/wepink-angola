@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { getProducts } from "@/lib/products";
 import { Product } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
@@ -108,30 +107,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-surface-container-low">
-        <div className="max-w-5xl mx-auto px-8 text-center reveal" data-reveal-delay="0">
-          <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-headline)] text-primary mb-8 tracking-tight">
-            Pronto para encontrar sua assinatura?
-          </h2>
-          <p className="text-on-surface-variant text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
-            Pagamentos rápidos e seguros via Multicaixa ou Multicaixa Express.
-            <br />
-            Entregas em toda Luanda no prazo de 24h.
-          </p>
-          <div className="inline-flex flex-col sm:flex-row gap-4">
-            <Link
-              href="#shop"
-              className="btn-shine bg-primary text-on-primary px-12 py-5 rounded-lg font-bold hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
-            >
-              Ver Todos os Produtos
-            </Link>
-            <button className="bg-surface-container-lowest text-primary px-12 py-5 rounded-lg font-bold hover:bg-primary/5 hover:shadow-md transition-all duration-300">
-              Contactar Consultor
-            </button>
-          </div>
-        </div>
-      </section>
+
     </main>
   );
 }

@@ -7,6 +7,7 @@ import { useState } from "react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "dashboard" },
+  { href: "/admin/encomendas", label: "Encomendas", icon: "shopping_bag" },
   { href: "/admin/produtos", label: "Produtos", icon: "inventory_2" },
   { href: "/admin/categorias", label: "Categorias", icon: "category" },
   { href: "/admin/contabilidade", label: "Contabilidade", icon: "account_balance" },

@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   ReactNode,
 } from "react";
 import { Product, CartItem } from "@/types/product";
@@ -33,6 +34,27 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore cart from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("wepink-cart");
+      if (saved) {
+        setItems(JSON.parse(saved));
+      }
+    } catch {
+      // ignore parse errors
+    }
+    setHydrated(true);
+  }, []);
+
+  // Persist cart to localStorage on change
+  useEffect(() => {
+    if (hydrated) {
+      localStorage.setItem("wepink-cart", JSON.stringify(items));
+    }
+  }, [items, hydrated]);
 
   const addItem = useCallback(
     (
