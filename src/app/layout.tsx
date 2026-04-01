@@ -94,7 +94,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#b71656" />
+        <meta name="theme-color" content="#FE4B8E" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="google-site-verification" content="2kdIw-NajFadBeWtXKsmVC1exuQ7kfWKz7j8kdFjm1M" />

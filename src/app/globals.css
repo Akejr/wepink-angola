@@ -11,10 +11,10 @@
   --color-surface-container-high: #eae7e7;
   --color-surface-container-highest: #e5e2e1;
   --color-surface-variant: #e5e2e1;
-  --color-surface-tint: #b71656;
+  --color-surface-tint: #FE4B8E;
 
   /* Primary */
-  --color-primary: #b71656;
+  --color-primary: #FE4B8E;
   --color-on-primary: #ffffff;
   --color-primary-container: #ffa0b6;
   --color-on-primary-container: #970043;
@@ -95,7 +95,7 @@ h3 {
 }
 
 .signature-gradient {
-  background: linear-gradient(135deg, #b71656 0%, #ffa0b6 100%);
+  background: linear-gradient(135deg, #FE4B8E 0%, #ffa0b6 100%);
 }
 
 /* ── Keyframe Animations ── */
@@ -198,8 +198,7 @@ h3 {
   left: 0;
   width: 0;
   height: 1.5px;
-  background-color: var(--color-primary);
-  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  background-color: var(--color-primary);  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-link:hover::after {

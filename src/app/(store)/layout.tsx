@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
 
 export default function StoreLayout({
   children,
@@ -9,6 +10,7 @@ export default function StoreLayout({
 }) {
   return (
     <>
+      <AnnouncementBar />
       <Navbar />
       <CartDrawer />
       {children}

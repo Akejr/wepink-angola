@@ -24,8 +24,8 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 glass-nav transition-all duration-500 ${
-        scrolled ? "py-0 shadow-[0_0_32px_rgba(28,27,27,0.04)]" : "py-0"
+      className={`fixed w-full z-50 glass-nav transition-all duration-500 ${
+        scrolled ? "top-0 py-0 shadow-[0_0_32px_rgba(28,27,27,0.04)]" : "top-9 py-0"
       }`}
     >
       <div className="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">

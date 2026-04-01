@@ -35,7 +35,7 @@ export default function Home() {
       : products.filter((p) => p.type === activeFilter);
 
   return (
-    <main className="pt-[72px]">
+    <main className="pt-[108px]">
       {/* Hero Banner */}
       <section className="w-full animate-fade-in">
         {/* eslint-disable-next-line @next/next/no-img-element */}

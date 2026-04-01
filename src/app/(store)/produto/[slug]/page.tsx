@@ -59,7 +59,7 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <main className="pt-[72px] pb-20">
+      <main className="pt-[108px] pb-20">
         <div className="max-w-7xl mx-auto px-6 pt-8">
           <div className="h-4 bg-surface-container-low rounded w-48 mb-12 animate-pulse" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
@@ -107,7 +107,7 @@ export default function ProductPage() {
   };
 
   return (
-    <main className="pt-[72px] pb-20">
+    <main className="pt-[108px] pb-20">
       <ProductJsonLd
         name={product.name}
         description={product.description}

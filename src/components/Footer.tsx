@@ -35,10 +35,10 @@ export function Footer() {
             Contactos Luanda
           </Link>
           <Link
-            href="#"
+            href="/assuntos-legais"
             className="text-secondary hover:text-primary hover:translate-x-1 transition-all duration-300 font-[family-name:var(--font-body)] text-sm inline-block"
           >
-            Pagamentos Multicaixa
+            Assuntos Legais
           </Link>
           <Link
             href="#"
@@ -100,9 +100,12 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-8 mt-16 pt-8 text-center">
+      <div className="max-w-7xl mx-auto px-8 mt-10 pt-6 text-center">
         <p className="text-secondary text-xs font-[family-name:var(--font-label)] tracking-wide">
           © 2026 Wepink Angola. Todos os direitos reservados.
+        </p>
+        <p className="text-primary text-[10px] font-[family-name:var(--font-label)] mt-3 max-w-xl mx-auto leading-relaxed">
+          A Wepink Angola não possui relação comercial direta com a empresa Wepink Cosméticos Ltda, sediada no Brasil. Importamos produtos adquiridos diretamente na loja oficial para revenda em solo angolano.
         </p>
       </div>
     </footer>
