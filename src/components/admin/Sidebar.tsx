@@ -11,6 +11,7 @@ const navItems = [
   { href: "/admin/produtos", label: "Produtos", icon: "inventory_2" },
   { href: "/admin/categorias", label: "Categorias", icon: "category" },
   { href: "/admin/contabilidade", label: "Contabilidade", icon: "account_balance" },
+  { href: "/admin/lancamento", label: "Lançamento", icon: "rocket_launch" },
 ];
 
 export function Sidebar() {
