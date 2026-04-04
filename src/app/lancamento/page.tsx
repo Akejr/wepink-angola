@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { subscribeLaunch } from "@/lib/launch";
+import { useState, useEffect, useRef } from "react";
+import { subscribeLaunch, getLaunchSubscribers, LaunchSubscriber } from "@/lib/launch";
 
 const LAUNCH_DATE = new Date("2026-04-12T00:00:00").getTime();
 
@@ -30,12 +30,33 @@ export default function LaunchPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [subscribers, setSubscribers] = useState<LaunchSubscriber[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setTimeLeft(getTimeLeft());
     const timer = setInterval(() => setTimeLeft(getTimeLeft()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Fetch subscribers
+  useEffect(() => {
+    getLaunchSubscribers().then(setSubscribers);
+  }, [submitted]);
+
+  // Auto-scroll names
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || subscribers.length === 0) return;
+    const interval = setInterval(() => {
+      if (el.scrollTop >= el.scrollHeight - el.clientHeight - 2) {
+        el.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ top: 32, behavior: "smooth" });
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [subscribers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,20 +124,55 @@ export default function LaunchPage() {
         </div>
 
         {/* Countdown */}
-        <div className="animate-fade-up delay-200 flex justify-center gap-4 md:gap-6">
+        <div className="animate-fade-up delay-200 flex justify-center gap-3 md:gap-6">
           {countdownBlocks.map((block) => (
             <div key={block.label} className="flex flex-col items-center">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-surface-container-lowest rounded-2xl flex items-center justify-center shadow-[0_0_32px_rgba(254,75,142,0.08)] border border-primary/10">
-                <span className="font-[family-name:var(--font-headline)] text-3xl md:text-4xl text-primary font-bold tabular-nums">
+              <div className="w-[72px] h-[72px] md:w-24 md:h-24 bg-surface-container-lowest rounded-2xl flex items-center justify-center shadow-[0_0_32px_rgba(254,75,142,0.08)] border border-primary/10">
+                <span className="font-[family-name:var(--font-headline)] text-2xl md:text-4xl text-primary font-bold tabular-nums">
                   {String(block.value).padStart(2, "0")}
                 </span>
               </div>
-              <span className="text-[10px] font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary mt-3">
+              <span className="text-[9px] md:text-[10px] font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary mt-2 md:mt-3">
                 {block.label}
               </span>
             </div>
           ))}
         </div>
+
+        {/* Social Proof */}
+        {subscribers.length > 0 && (
+          <div className="animate-fade-up delay-200 space-y-4">
+            <p className="text-secondary text-sm">
+              Junte-se a <span className="text-primary font-bold">{subscribers.length}</span> pessoa{subscribers.length !== 1 && "s"} na lista de espera
+            </p>
+            <div className="relative overflow-hidden h-10 max-w-sm mx-auto">
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-b from-surface to-transparent z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-t from-surface to-transparent z-10" />
+              <div
+                ref={scrollRef}
+                className="flex flex-col items-center"
+                style={{
+                  animation: `marquee-up ${Math.max(subscribers.length * 2.5, 8)}s linear infinite`,
+                }}
+              >
+                {[...subscribers, ...subscribers].map((sub, i) => (
+                  <div key={`${sub.id}-${i}`} className="flex items-center gap-2 h-10 shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
+                      {sub.name.charAt(0).toUpperCase()}
+                    </span>
+                    <span className="text-sm text-on-surface-variant">
+                      {(() => {
+                        const parts = sub.name.trim().split(/\s+/);
+                        return parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1]}` : parts[0];
+                      })()}
+                    </span>
+                    <span className="text-[10px] text-secondary">entrou na lista</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Subscribe Form */}
         <div className="animate-fade-up delay-300">

@@ -251,3 +251,10 @@ h3 {
 html {
   scroll-behavior: smooth;
 }
+
+/* ── Marquee vertical ── */
+
+@keyframes marquee-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
