@@ -82,6 +82,7 @@ export const metadata: Metadata = {
     canonical: "https://www.wepinkangola.com",
   },
   category: "ecommerce",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -93,7 +94,6 @@ export default function RootLayout({
     <html lang="pt-AO" className={`${notoSerif.variable} ${manrope.variable}`}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#FE4B8E" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
