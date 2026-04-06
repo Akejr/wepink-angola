@@ -276,8 +276,8 @@ export default function CheckoutPage() {
   return (
     <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-        {/* Left: Order Summary */}
-        <div className="lg:col-span-5 space-y-12">
+        {/* Left: Order Summary (desktop only) */}
+        <div className="hidden lg:block lg:col-span-5 space-y-12">
           <section>
             <h2 className="text-3xl font-[family-name:var(--font-headline)] text-primary mb-10">Resumo do Pedido</h2>
             <div className="bg-surface-container-lowest p-8 rounded-lg space-y-8">
@@ -398,10 +398,10 @@ export default function CheckoutPage() {
                   </label>
                 </div>
               </div>
-              <div className="group">
+              <div className="col-span-2 group">
                 <div className="relative bg-surface-container-lowest rounded-xl overflow-hidden border border-transparent focus-within:border-primary/30 focus-within:shadow-[0_0_0_3px_rgba(183,22,86,0.15)] transition-all duration-300">
                   <textarea value={form.deliveryNotes} onChange={(e) => updateForm("deliveryNotes", e.target.value)}
-                    placeholder=" " id="field-notes" rows={2}
+                    placeholder=" " id="field-notes" rows={3}
                     className="peer w-full bg-transparent px-4 pt-6 pb-2 text-sm text-on-surface border-0 focus:ring-0 placeholder-transparent resize-none" />
                   <label htmlFor="field-notes"
                     className="absolute left-4 top-2 text-[10px] font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-xs peer-placeholder-shown:normal-case peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-[10px] peer-focus:uppercase peer-focus:tracking-widest peer-focus:text-primary">
@@ -411,6 +411,34 @@ export default function CheckoutPage() {
               </div>
             </div>
           </section>
+
+          {/* Mobile Order Summary */}
+          <div className="lg:hidden bg-surface-container-lowest p-6 rounded-lg space-y-4">
+            <h3 className="font-[family-name:var(--font-headline)] text-lg text-primary">Resumo</h3>
+            {items.map((item) => (
+              <div key={`m-${item.product.id}-${item.selectedSize.label}`} className="flex items-center gap-3">
+                <div className="w-10 h-12 rounded overflow-hidden flex-shrink-0 relative">
+                  <Image src={item.product.imageUrl} alt={item.product.name} fill sizes="40px" className="object-cover" />
+                </div>
+                <span className="text-sm text-on-surface truncate flex-1">{item.product.name} · {item.selectedSize.label} {item.quantity > 1 ? `x${item.quantity}` : ""}</span>
+                <span className="text-sm text-on-surface font-medium flex-shrink-0">{formatPrice(item.selectedSize.price * item.quantity)} Kz</span>
+              </div>
+            ))}
+            <div className="pt-3 space-y-2" style={{ borderTop: "1px solid rgba(214, 194, 196, 0.15)" }}>
+              <div className="flex justify-between text-sm text-secondary">
+                <span>Subtotal</span>
+                <span>{formatPrice(totalPrice)} Kz</span>
+              </div>
+              <div className="flex justify-between text-sm text-secondary">
+                <span>Entrega ({form.area})</span>
+                <span>{formatPrice(deliveryFee)} Kz</span>
+              </div>
+              <div className="flex justify-between font-bold text-lg pt-2">
+                <span className="font-[family-name:var(--font-headline)]">Total</span>
+                <span className="font-[family-name:var(--font-headline)] text-primary">{formatPrice(total)} Kz</span>
+              </div>
+            </div>
+          </div>
 
           {/* Payment Section */}
           <section className="space-y-8">
