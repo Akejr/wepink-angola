@@ -123,9 +123,21 @@ export default function CheckoutPage() {
         }),
       });
       const data = await res.json();
-      return data.orderId;
+      return data.orderId as string | null;
     } catch {
       return null;
+    }
+  };
+
+  const updateOrder = async (orderId: string, paymentData: Record<string, unknown>) => {
+    try {
+      await fetch("/api/orders/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, paymentData }),
+      });
+    } catch {
+      // silent
     }
   };
 
@@ -139,7 +151,7 @@ export default function CheckoutPage() {
     setStep("processing");
 
     // Save order first as pending
-    await saveOrder({ success: false });
+    const orderId = await saveOrder({ success: false });
 
     try {
       if (paymentMethod === "mcx") {
@@ -155,8 +167,13 @@ export default function CheckoutPage() {
           }),
         });
         const data = await res.json();
-        // Update order with payment result
-        await saveOrder(data);
+        if (orderId) {
+          await updateOrder(orderId, {
+            payment_status: data.success ? "paid" : "failed",
+            transaction_id: data.transactionId,
+            invoice_url: data.invoiceUrl,
+          });
+        }
         if (data.success) {
           setStep("success");
           clearCart();
@@ -177,7 +194,16 @@ export default function CheckoutPage() {
         });
         const data = await res.json();
         if (data.success) {
-          await saveOrder(data);
+          if (orderId) {
+            await updateOrder(orderId, {
+              payment_status: "pending",
+              operation_id: data.operationId,
+              transaction_id: data.transactionId,
+              reference_number: data.referenceNumber,
+              reference_entity: data.entity,
+              reference_due_date: data.dueDate,
+            });
+          }
           setReferenceData({
             entity: data.entity,
             referenceNumber: data.referenceNumber,
@@ -187,7 +213,9 @@ export default function CheckoutPage() {
           });
           setStep("reference-created");
         } else {
-          await saveOrder(data);
+          if (orderId) {
+            await updateOrder(orderId, { payment_status: "failed" });
+          }
           setError(data.error || "Erro ao gerar referência. Tente novamente.");
           setStep("error");
         }

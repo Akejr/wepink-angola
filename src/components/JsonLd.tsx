@@ -56,9 +56,10 @@ interface ProductJsonLdProps {
   price: number;
   slug: string;
   badge?: string;
+  inStock?: boolean;
 }
 
-export function ProductJsonLd({ name, description, image, price, slug, badge }: ProductJsonLdProps) {
+export function ProductJsonLd({ name, description, image, price, slug, badge, inStock = true }: ProductJsonLdProps) {
   const data = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -76,7 +77,7 @@ export function ProductJsonLd({ name, description, image, price, slug, badge }: 
       "@type": "Offer",
       price: price,
       priceCurrency: "AOA",
-      availability: "https://schema.org/InStock",
+      availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "Wepink Angola",

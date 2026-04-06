@@ -33,6 +33,9 @@ export default function ProductPage() {
       getProductBySlug(slug).then((data) => {
         setProduct(data);
         setLoading(false);
+        if (data) {
+          document.title = `${data.name} | Wepink Angola`;
+        }
       });
     }
   }, [slug]);
@@ -120,6 +123,7 @@ export default function ProductPage() {
         price={selectedSize.price}
         slug={product.slug}
         badge={product.badge}
+        inStock={product.stock > 0}
       />
       <BreadcrumbJsonLd
         items={[

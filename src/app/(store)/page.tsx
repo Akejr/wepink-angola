@@ -41,7 +41,7 @@ export default function Home() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/Banner.gif"
-          alt="Wepink Angola"
+          alt="Wepink Angola - Perfumes e Body Splash Premium em Luanda"
           className="w-full h-auto block"
         />
       </section>
