@@ -16,9 +16,12 @@ export function ProductCard({ product, offset = false }: ProductCardProps) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
+  const isOutOfStock = product.stock <= 0;
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isOutOfStock) return;
     addItem(product, product.sizes[product.sizes.length - 1]);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
@@ -37,9 +40,16 @@ export function ProductCard({ product, offset = false }: ProductCardProps) {
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        {product.badge && (
+        {product.badge && !isOutOfStock && (
           <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/90 backdrop-blur-sm px-2 py-0.5 md:px-3 md:py-1 rounded text-[8px] md:text-[10px] font-bold tracking-widest text-primary transition-transform duration-300 group-hover:scale-105">
             {product.badge}
+          </div>
+        )}
+        {isOutOfStock && (
+          <div className="absolute inset-0 bg-on-surface/30 flex items-center justify-center">
+            <span className="bg-on-surface/80 text-white px-3 py-1 rounded text-[10px] md:text-xs font-bold tracking-widest uppercase">
+              Esgotado
+            </span>
           </div>
         )}
         <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/[0.03] transition-colors duration-500" />
@@ -59,14 +69,17 @@ export function ProductCard({ product, offset = false }: ProductCardProps) {
         </div>
         <button
           onClick={handleAddToCart}
+          disabled={isOutOfStock}
           className={`p-2 md:p-3 rounded-lg transition-all duration-300 active:scale-90 flex-shrink-0 ${
-            added
+            isOutOfStock
+              ? "bg-surface-container text-outline-variant cursor-not-allowed"
+              : added
               ? "bg-primary text-on-primary scale-110"
               : "bg-secondary-container text-on-secondary-container hover:bg-primary hover:text-on-primary hover:scale-110 hover:shadow-md hover:shadow-primary/10"
           }`}
         >
           <span className="material-symbols-outlined text-xl md:text-2xl transition-transform duration-300">
-            {added ? "check" : "add_shopping_cart"}
+            {isOutOfStock ? "block" : added ? "check" : "add_shopping_cart"}
           </span>
         </button>
       </div>

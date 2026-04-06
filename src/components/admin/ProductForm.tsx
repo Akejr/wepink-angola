@@ -33,6 +33,7 @@ const emptyForm: ProductFormData = {
   badge: "",
   description: "",
   scent_profile: [],
+  stock: 0,
   sizes: [],
 };
 
@@ -227,17 +228,17 @@ export function ProductForm({
 
           <div className="space-y-2">
             <label className="text-xs font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary">
-              Preço de Compra (AOA) *
+              Estoque *
             </label>
             <input
               type="number"
               required
               min={0}
-              value={form.purchase_price || ""}
+              value={form.stock}
               onChange={(e) =>
-                update("purchase_price", parseInt(e.target.value) || 0)
+                update("stock", parseInt(e.target.value) || 0)
               }
-              placeholder="18000"
+              placeholder="10"
               className="w-full bg-surface-container-low rounded-lg px-4 py-3 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline-variant"
             />
           </div>

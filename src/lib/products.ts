@@ -16,6 +16,7 @@ interface DbProduct {
   scent_profile: string[];
   duration: string | null;
   ingredients: string | null;
+  stock: number;
   product_sizes: { label: string; ml: number; price: number }[];
 }
 
@@ -33,6 +34,7 @@ function mapDbToProduct(row: DbProduct): Product {
     badge: row.badge ?? undefined,
     description: row.description ?? "",
     scentProfile: row.scent_profile ?? [],
+    stock: row.stock ?? 0,
     sizes: (row.product_sizes ?? []).map((s) => ({
       label: s.label,
       ml: s.ml,
@@ -56,7 +58,13 @@ export async function getProducts(): Promise<Product[]> {
     return [];
   }
 
-  return (data as DbProduct[]).map(mapDbToProduct);
+  const products = (data as DbProduct[]).map(mapDbToProduct);
+  // In stock first, out of stock last
+  return products.sort((a, b) => {
+    if (a.stock > 0 && b.stock <= 0) return -1;
+    if (a.stock <= 0 && b.stock > 0) return 1;
+    return 0;
+  });
 }
 
 export async function getProductBySlug(

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function AssuntosLegaisPage() {
   return (
-    <main className="pt-[108px] pb-20">
+    <main className="pt-[140px] pb-20">
       <div className="max-w-3xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-headline)] text-4xl md:text-5xl text-primary mb-4">
           Assuntos Legais

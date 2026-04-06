@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getOrders, updateDeliveryStatus, Order } from "@/lib/orders";
+import { getOrders, updateDeliveryStatus, deleteOrder, Order } from "@/lib/orders";
 import { formatPrice } from "@/lib/products";
 
 type FilterTab = "all" | "paid" | "pending" | "failed";
@@ -48,6 +48,14 @@ export default function EncomendasPage() {
       );
     }
     setUpdatingDelivery(null);
+  };
+
+  const handleDeleteOrder = async (order: Order) => {
+    if (!confirm(`Apagar encomenda de "${order.customer_name}"?`)) return;
+    const result = await deleteOrder(order.id);
+    if (result.success) {
+      setOrders((prev) => prev.filter((o) => o.id !== order.id));
+    }
   };
 
   const tabs: { label: string; value: FilterTab }[] = [
@@ -246,8 +254,17 @@ export default function EncomendasPage() {
                       </div>
 
                       {/* Actions */}
-                      {order.payment_status === "paid" && (
-                        <div className="flex justify-end">
+                      <div className="flex justify-end gap-2">
+                        {(order.payment_status === "pending" || order.payment_status === "failed" || order.payment_status === "expired") && (
+                          <button
+                            onClick={() => handleDeleteOrder(order)}
+                            className="px-6 py-3 rounded-lg font-bold text-sm flex items-center gap-2 transition-all active:scale-95 bg-surface-container-low text-error hover:bg-error/10"
+                          >
+                            <span className="material-symbols-outlined text-xl">delete</span>
+                            Apagar
+                          </button>
+                        )}
+                        {order.payment_status === "paid" && (
                           <button
                             onClick={() => handleToggleDelivery(order)}
                             disabled={updatingDelivery === order.id}
@@ -266,8 +283,8 @@ export default function EncomendasPage() {
                               ? "Desfazer Entrega"
                               : "Marcar como Entregue"}
                           </button>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

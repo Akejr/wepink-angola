@@ -11,6 +11,8 @@ const navItems = [
   { href: "/admin/produtos", label: "Produtos", icon: "inventory_2" },
   { href: "/admin/categorias", label: "Categorias", icon: "category" },
   { href: "/admin/contabilidade", label: "Contabilidade", icon: "account_balance" },
+  { href: "/admin/avisos", label: "Avisos Estoque", icon: "notifications" },
+  { href: "/admin/mensagens", label: "Mensagens", icon: "mail" },
   { href: "/admin/lancamento", label: "Lançamento", icon: "rocket_launch" },
 ];
 
@@ -34,9 +36,7 @@ export function Sidebar() {
             height={34}
             className="h-7 w-auto object-contain brightness-0 invert opacity-80"
           />
-          <span className="block text-[10px] uppercase tracking-[0.3em] text-white/40 mt-1.5">
-            Backoffice
-          </span>
+          <span className="hidden">Admin</span>
         </Link>
       </div>
 

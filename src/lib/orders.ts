@@ -170,3 +170,11 @@ export async function updateDeliveryStatus(
   if (error) return { success: false, error: error.message };
   return { success: true };
 }
+
+export async function deleteOrder(
+  orderId: string
+): Promise<{ success: boolean; error?: string }> {
+  const { error } = await supabase.from("orders").delete().eq("id", orderId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}

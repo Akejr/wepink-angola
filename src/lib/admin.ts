@@ -17,6 +17,7 @@ export interface AdminProduct {
   duration: string | null;
   ingredients: string | null;
   created_at: string;
+  stock: number;
   product_sizes: AdminProductSize[];
   categories?: { id: string; name: string } | null;
 }
@@ -41,6 +42,7 @@ export interface ProductFormData {
   badge: string;
   description: string;
   scent_profile: string[];
+  stock: number;
   sizes: AdminProductSize[];
 }
 
@@ -91,6 +93,7 @@ export async function createProduct(
       badge: form.badge || null,
       description: form.description || null,
       scent_profile: form.scent_profile,
+      stock: form.stock || 0,
     })
     .select("id")
     .single();
@@ -141,6 +144,7 @@ export async function updateProduct(
       badge: form.badge || null,
       description: form.description || null,
       scent_profile: form.scent_profile,
+      stock: form.stock || 0,
     })
     .eq("id", id);
 
@@ -190,8 +194,10 @@ export async function deleteProduct(
 
 export interface DashboardStats {
   totalProducts: number;
-  totalInventoryValue: number;
-  totalRevenueValue: number;
+  totalStock: number;
+  totalSold: number;
+  totalExpenses: number;
+  balance: number;
   profitMargin: number;
   typeCounts: Record<string, number>;
   recentProducts: AdminProduct[];
@@ -201,15 +207,24 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const products = await getAdminProducts();
 
   const totalProducts = products.length;
-  const totalInventoryValue = products.reduce(
-    (sum, p) => sum + (p.purchase_price || 0),
-    0
-  );
-  const totalRevenueValue = products.reduce((sum, p) => sum + p.price, 0);
-  const profitMargin =
-    totalRevenueValue > 0
-      ? ((totalRevenueValue - totalInventoryValue) / totalRevenueValue) * 100
-      : 0;
+  const totalStock = products.reduce((sum, p) => sum + (p.stock || 0), 0);
+
+  // Total sold from paid orders
+  const { data: orders } = await supabase
+    .from("orders")
+    .select("subtotal")
+    .eq("payment_status", "paid");
+  const totalSold = (orders || []).reduce((sum, o) => sum + (o.subtotal || 0), 0);
+
+  // Total expenses from finances
+  const { data: expenses } = await supabase
+    .from("finances")
+    .select("amount")
+    .eq("type", "expense");
+  const totalExpenses = (expenses || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+
+  const balance = totalSold - totalExpenses;
+  const profitMargin = totalSold > 0 ? ((totalSold - totalExpenses) / totalSold) * 100 : 0;
 
   const typeCounts: Record<string, number> = {};
   products.forEach((p) => {
@@ -220,8 +235,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
   return {
     totalProducts,
-    totalInventoryValue,
-    totalRevenueValue,
+    totalStock,
+    totalSold,
+    totalExpenses,
+    balance,
     profitMargin,
     typeCounts,
     recentProducts,

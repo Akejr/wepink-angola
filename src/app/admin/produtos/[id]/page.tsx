@@ -88,6 +88,7 @@ export default function EditProductPage() {
     badge: product.badge || "",
     description: product.description || "",
     scent_profile: product.scent_profile || [],
+    stock: product.stock || 0,
     sizes: (product.product_sizes || []).map((s) => ({
       label: s.label,
       ml: s.ml,

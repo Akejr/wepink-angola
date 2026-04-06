@@ -50,32 +50,32 @@ export default function AdminDashboard() {
 
   const cards = [
     {
-      label: "Total Produtos",
-      value: String(stats.totalProducts),
+      label: "Produtos / Estoque",
+      value: `${stats.totalProducts} / ${stats.totalStock} un.`,
       icon: "inventory_2",
       color: "text-primary",
       bg: "bg-primary/8",
     },
     {
-      label: "Valor de Venda",
-      value: `${formatPrice(stats.totalRevenueValue)} Kz`,
+      label: "Saldo Atual",
+      value: `${formatPrice(stats.balance)} Kz`,
+      icon: "account_balance_wallet",
+      color: stats.balance >= 0 ? "text-blue-700" : "text-red-700",
+      bg: stats.balance >= 0 ? "bg-blue-50" : "bg-red-50",
+    },
+    {
+      label: "Total Vendido",
+      value: `${formatPrice(stats.totalSold)} Kz`,
       icon: "payments",
       color: "text-green-700",
       bg: "bg-green-50",
     },
     {
-      label: "Custo de Compra",
-      value: `${formatPrice(stats.totalInventoryValue)} Kz`,
+      label: "Total Gasto",
+      value: `${formatPrice(stats.totalExpenses)} Kz`,
       icon: "shopping_cart",
       color: "text-amber-700",
       bg: "bg-amber-50",
-    },
-    {
-      label: "Margem de Lucro",
-      value: `${stats.profitMargin.toFixed(1)}%`,
-      icon: "trending_up",
-      color: "text-blue-700",
-      bg: "bg-blue-50",
     },
   ];
 
@@ -161,9 +161,6 @@ export default function AdminDashboard() {
                 <div className="text-right flex-shrink-0">
                   <p className="font-[family-name:var(--font-headline)] text-sm text-primary">
                     {formatPrice(product.price)} Kz
-                  </p>
-                  <p className="text-[10px] text-secondary">
-                    Custo: {formatPrice(product.purchase_price || 0)} Kz
                   </p>
                 </div>
               </Link>

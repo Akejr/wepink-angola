@@ -29,10 +29,10 @@ export function Footer() {
             Informação
           </h4>
           <Link
-            href="#"
+            href="/contacto"
             className="text-secondary hover:text-primary hover:translate-x-1 transition-all duration-300 font-[family-name:var(--font-body)] text-sm inline-block"
           >
-            Contactos Luanda
+            Contacto
           </Link>
           <Link
             href="/assuntos-legais"
@@ -41,13 +41,13 @@ export function Footer() {
             Assuntos Legais
           </Link>
           <Link
-            href="#"
+            href="/termos"
             className="text-secondary hover:text-primary hover:translate-x-1 transition-all duration-300 font-[family-name:var(--font-body)] text-sm inline-block"
           >
             Termos e Condições
           </Link>
           <Link
-            href="#"
+            href="/privacidade"
             className="text-secondary hover:text-primary hover:translate-x-1 transition-all duration-300 font-[family-name:var(--font-body)] text-sm inline-block"
           >
             Privacidade

@@ -145,8 +145,8 @@ export default function ProductsListPage() {
                         <span className="font-[family-name:var(--font-headline)] text-sm text-primary">
                           {formatPrice(product.price)} Kz
                         </span>
-                        <span className="text-xs text-secondary ml-2">
-                          Custo: {formatPrice(product.purchase_price || 0)}
+                        <span className={`text-xs ml-2 font-bold ${(product.stock || 0) > 0 ? "text-green-700" : "text-error"}`}>
+                          · {(product.stock || 0) > 0 ? `${product.stock} un.` : "Esgotado"}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
@@ -188,8 +188,8 @@ export default function ProductsListPage() {
                   <th className="text-right text-xs font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary px-6 py-4">
                     Preço Venda
                   </th>
-                  <th className="text-right text-xs font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary px-6 py-4">
-                    Preço Compra
+                  <th className="text-center text-xs font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary px-6 py-4">
+                    Estoque
                   </th>
                   <th className="text-right text-xs font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary px-6 py-4">
                     Ações
@@ -234,9 +234,9 @@ export default function ProductsListPage() {
                         {formatPrice(product.price)} Kz
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <span className="text-sm text-secondary">
-                        {formatPrice(product.purchase_price || 0)} Kz
+                    <td className="px-6 py-4 text-center">
+                      <span className={`text-sm font-bold ${(product.stock || 0) > 0 ? "text-green-700" : "text-error"}`}>
+                        {(product.stock || 0) > 0 ? product.stock : "Esgotado"}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">

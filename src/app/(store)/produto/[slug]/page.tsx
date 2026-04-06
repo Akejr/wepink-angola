@@ -9,6 +9,7 @@ import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import { useScrollRevealAll } from "@/hooks/useScrollReveal";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
+import { createStockAlert } from "@/lib/stockAlerts";
 
 export default function ProductPage() {
   const params = useParams();
@@ -20,6 +21,10 @@ export default function ProductPage() {
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [alertName, setAlertName] = useState("");
+  const [alertWhatsapp, setAlertWhatsapp] = useState("");
+  const [alertSubmitting, setAlertSubmitting] = useState(false);
+  const [alertSubmitted, setAlertSubmitted] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   useScrollRevealAll();
 
@@ -231,19 +236,70 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              <button
-                onClick={handleAddToCart}
-                className={`animate-fade-up delay-400 w-full py-6 rounded-lg font-bold text-sm tracking-[0.2em] uppercase transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer btn-shine ${
-                  addedToCart
-                    ? "bg-green-600 text-white shadow-lg shadow-green-600/20"
-                    : "signature-gradient text-on-primary hover:shadow-lg hover:shadow-primary/20"
-                }`}
-              >
-                <span className="material-symbols-outlined text-xl transition-transform duration-300">
-                  {addedToCart ? "check_circle" : "shopping_cart"}
-                </span>
-                {addedToCart ? "Adicionado!" : "Adicionar ao Carrinho"}
-              </button>
+              {product.stock > 0 ? (
+                <button
+                  onClick={handleAddToCart}
+                  className={`animate-fade-up delay-400 w-full py-6 rounded-lg font-bold text-sm tracking-[0.2em] uppercase transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer btn-shine ${
+                    addedToCart
+                      ? "bg-green-600 text-white shadow-lg shadow-green-600/20"
+                      : "signature-gradient text-on-primary hover:shadow-lg hover:shadow-primary/20"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-xl transition-transform duration-300">
+                    {addedToCart ? "check_circle" : "shopping_cart"}
+                  </span>
+                  {addedToCart ? "Adicionado!" : "Adicionar ao Carrinho"}
+                </button>
+              ) : (
+                <div className="animate-fade-up delay-400 space-y-4">
+                  <div className="w-full py-4 rounded-lg bg-surface-container text-center">
+                    <span className="text-secondary font-bold text-sm tracking-widest uppercase">Produto Esgotado</span>
+                  </div>
+                  {alertSubmitted ? (
+                    <div className="bg-surface-container-lowest p-6 rounded-xl text-center space-y-2 animate-scale-in">
+                      <span className="material-symbols-outlined text-3xl text-primary">notifications_active</span>
+                      <p className="text-on-surface font-medium text-sm">Vamos te avisar, {alertName.split(" ")[0]}!</p>
+                    </div>
+                  ) : (
+                    <div className="bg-surface-container-lowest p-6 rounded-xl space-y-4">
+                      <p className="text-on-surface font-[family-name:var(--font-headline)] text-lg">Me avise quando estiver disponível</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          value={alertName}
+                          onChange={(e) => setAlertName(e.target.value)}
+                          placeholder="Seu nome"
+                          className="bg-surface-container-low rounded-lg px-4 py-3 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20 placeholder:text-outline-variant"
+                        />
+                        <input
+                          type="tel"
+                          value={alertWhatsapp}
+                          onChange={(e) => setAlertWhatsapp(e.target.value)}
+                          placeholder="WhatsApp"
+                          className="bg-surface-container-low rounded-lg px-4 py-3 text-sm text-on-surface border-0 focus:ring-2 focus:ring-primary/20 placeholder:text-outline-variant"
+                        />
+                      </div>
+                      <button
+                        onClick={async () => {
+                          if (!alertName.trim() || !alertWhatsapp.trim()) return;
+                          setAlertSubmitting(true);
+                          await createStockAlert(product.id, product.name, alertName.trim(), alertWhatsapp.trim());
+                          setAlertSubmitted(true);
+                          setAlertSubmitting(false);
+                        }}
+                        disabled={alertSubmitting}
+                        className="w-full bg-primary text-on-primary py-3 rounded-lg font-bold text-sm tracking-widest uppercase hover:opacity-90 transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
+                      >
+                        {alertSubmitting ? (
+                          <><span className="material-symbols-outlined text-lg animate-spin">progress_activity</span> A registar...</>
+                        ) : (
+                          <><span className="material-symbols-outlined text-lg">notifications</span> Avisar-me</>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
             </div>
           </div>

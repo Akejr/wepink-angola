@@ -12,6 +12,7 @@ export interface Product {
   description: string;
   scentProfile: string[];
   sizes: { label: string; ml: number; price: number }[];
+  stock: number;
   details: {
     duration: string;
     ingredients: string;
