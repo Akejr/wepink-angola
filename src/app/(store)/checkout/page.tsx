@@ -113,7 +113,7 @@ export default function CheckoutPage() {
 
   const saveOrder = async (paymentResult: Record<string, unknown>) => {
     try {
-      await fetch("/api/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -122,8 +122,10 @@ export default function CheckoutPage() {
           paymentMethod,
         }),
       });
+      const data = await res.json();
+      return data.orderId;
     } catch {
-      // order save failure shouldn't block the user
+      return null;
     }
   };
 
@@ -135,6 +137,9 @@ export default function CheckoutPage() {
 
     setError("");
     setStep("processing");
+
+    // Save order first as pending
+    await saveOrder({ success: false });
 
     try {
       if (paymentMethod === "mcx") {
@@ -150,6 +155,7 @@ export default function CheckoutPage() {
           }),
         });
         const data = await res.json();
+        // Update order with payment result
         await saveOrder(data);
         if (data.success) {
           setStep("success");
@@ -181,6 +187,7 @@ export default function CheckoutPage() {
           });
           setStep("reference-created");
         } else {
+          await saveOrder(data);
           setError(data.error || "Erro ao gerar referência. Tente novamente.");
           setStep("error");
         }

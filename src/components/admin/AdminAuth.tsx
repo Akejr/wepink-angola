@@ -24,6 +24,11 @@ export function AdminAuth({ children }: { children: ReactNode }) {
       }
     }
     setChecking(false);
+
+    // Register admin service worker for PWA
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/admin-sw.js").catch(() => {});
+    }
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
