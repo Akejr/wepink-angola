@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/products";
+import { deliveryAreas, getDeliveryFee } from "@/lib/deliveryAreas";
 import { useState, useEffect, useRef } from "react";
 
 type PaymentMethod = "reference" | "mcx";
@@ -29,13 +30,13 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    municipality: "Luanda",
+    area: "Cidade",
     address: "",
     email: "",
     deliveryNotes: "",
   });
 
-  const deliveryFee = 2500;
+  const deliveryFee = getDeliveryFee(form.area);
   const total = totalPrice + deliveryFee;
 
   const updateForm = (key: string, value: string) =>
@@ -91,7 +92,7 @@ export default function CheckoutPage() {
     customer_name: form.name,
     customer_phone: form.phone,
     customer_email: form.email || undefined,
-    customer_municipality: form.municipality,
+    customer_municipality: form.area,
     customer_address: form.address,
     delivery_notes: form.deliveryNotes || undefined,
     payment_method: paymentMethod,
@@ -305,7 +306,7 @@ export default function CheckoutPage() {
                   <span>{formatPrice(totalPrice)} Kz</span>
                 </div>
                 <div className="flex justify-between text-secondary font-[family-name:var(--font-label)]">
-                  <span>Entrega (Luanda)</span>
+                  <span>Entrega ({form.area})</span>
                   <span>{formatPrice(deliveryFee)} Kz</span>
                 </div>
                 <div className="flex justify-between text-on-surface font-bold text-xl pt-4">
@@ -359,22 +360,18 @@ export default function CheckoutPage() {
               </div>
               <div className="group">
                 <div className="relative bg-surface-container-lowest rounded-xl overflow-hidden border border-transparent focus-within:border-primary/30 focus-within:shadow-[0_0_0_3px_rgba(183,22,86,0.15)] transition-all duration-300">
-                  <select value={form.municipality} onChange={(e) => updateForm("municipality", e.target.value)}
-                    id="field-municipality"
+                  <select value={form.area} onChange={(e) => updateForm("area", e.target.value)}
+                    id="field-area"
                     className="w-full bg-transparent px-4 pt-6 pb-2 text-sm text-on-surface border-0 focus:ring-0 appearance-none cursor-pointer">
-                    <option>Belas</option>
-                    <option>Cacuaco</option>
-                    <option>Cazenga</option>
-                    <option>Icolo e Bengo</option>
-                    <option>Luanda</option>
-                    <option>Quiçama</option>
-                    <option>Kilamba Kiaxi</option>
-                    <option>Talatona</option>
-                    <option>Viana</option>
+                    {deliveryAreas.map((area) => (
+                      <option key={area.name} value={area.name}>
+                        {area.name}
+                      </option>
+                    ))}
                   </select>
-                  <label htmlFor="field-municipality"
+                  <label htmlFor="field-area"
                     className="absolute left-4 top-2 text-[10px] font-[family-name:var(--font-label)] uppercase tracking-widest text-secondary">
-                    Município (Luanda)
+                    Área de Entrega
                   </label>
                   <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-lg pointer-events-none">expand_more</span>
                 </div>

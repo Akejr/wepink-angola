@@ -1,0 +1,23 @@
+{
+  "name": "Wepink Admin",
+  "short_name": "WP Admin",
+  "description": "Painel de gestão Wepink Angola",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#1c1b1b",
+  "theme_color": "#1c1b1b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/images/wepinkangola.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/wepinkangola.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

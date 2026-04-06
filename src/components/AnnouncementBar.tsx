@@ -19,7 +19,7 @@ export function AnnouncementBar() {
       style={{ backgroundColor: "#FE4B8E" }}
     >
       <p className="text-white text-[11px] font-bold tracking-widest uppercase font-[family-name:var(--font-label)]">
-        Entregas por 2.500 Kz por toda Luanda
+        Bem-vindo à Wepink Angola · Garanta agora o seu produto antes que esgote
       </p>
     </div>
   );
