@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { WelcomePopup } from "@/components/WelcomePopup";
+import { WhatsappButton } from "@/components/WhatsappButton";
 
 export default function StoreLayout({
   children,
@@ -16,6 +17,7 @@ export default function StoreLayout({
       <Navbar />
       <CartDrawer />
       {children}
+      <WhatsappButton />
       <Footer />
     </>
   );
