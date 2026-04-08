@@ -7,7 +7,7 @@ import { formatPrice } from "@/lib/products";
 import { deliveryAreas, getDeliveryFee } from "@/lib/deliveryAreas";
 import { useState, useEffect, useRef } from "react";
 
-type PaymentMethod = "reference" | "mcx";
+type PaymentMethod = "reference" | "mcx" | "delivery";
 type CheckoutStep = "form" | "processing" | "reference-created" | "success" | "error";
 
 interface ReferenceData {
@@ -219,6 +219,21 @@ export default function CheckoutPage() {
           setError(data.error || "Erro ao gerar referência. Tente novamente.");
           setStep("error");
         }
+      }
+
+      // Delivery payment - send WhatsApp
+      if (paymentMethod === "delivery") {
+        if (orderId) {
+          await updateOrder(orderId, { payment_status: "pending" });
+        }
+        const productsList = items
+          .map((item) => `• ${item.product.name} (${item.selectedSize.label}) x${item.quantity} — ${formatPrice(item.selectedSize.price * item.quantity)} Kz`)
+          .join("\n");
+        const msg = `🛒 *Novo Pedido - Pagamento na Entrega*\n\n👤 *Cliente:* ${form.name}\n📱 *Telefone:* ${form.phone}\n📍 *Área:* ${form.area}\n🏠 *Endereço:* ${form.address}${form.deliveryNotes ? `\n📝 *Orientação:* ${form.deliveryNotes}` : ""}\n\n📦 *Produtos:*\n${productsList}\n\n🚚 Entrega (${form.area}): ${formatPrice(deliveryFee)} Kz\n💰 *Total: ${formatPrice(total)} Kz*\n\n💳 Pagamento na entrega`;
+        const whatsappUrl = `https://wa.me/244931343433?text=${encodeURIComponent(msg)}`;
+        window.open(whatsappUrl, "_blank");
+        setStep("success");
+        clearCart();
       }
     } catch {
       setError("Erro de conexão. Verifique a sua internet.");
@@ -523,6 +538,27 @@ export default function CheckoutPage() {
                   {paymentMethod === "mcx" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                 </div>
               </button>
+
+              {/* Delivery Option */}
+              <button onClick={() => setPaymentMethod("delivery")}
+                className={`w-full p-6 rounded-xl flex items-center justify-between text-left transition-all ${
+                  paymentMethod === "delivery"
+                    ? "bg-surface-container-lowest border border-primary/20"
+                    : "bg-surface-container-low/50 border border-transparent opacity-60"
+                }`}>
+                <div className="flex items-center gap-5">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                    <Image src="/images/pagentrega.png" alt="Pagamento na Entrega" width={48} height={48} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-on-surface">Pagamento na Entrega</p>
+                    <p className="text-secondary text-xs">Pague em dinheiro ao receber o produto</p>
+                  </div>
+                </div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === "delivery" ? "border-primary" : "border-outline-variant"}`}>
+                  {paymentMethod === "delivery" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                </div>
+              </button>
             </div>
 
             {paymentMethod === "reference" && (
@@ -536,6 +572,13 @@ export default function CheckoutPage() {
               <div className="p-5 border border-dashed border-outline-variant rounded-lg">
                 <p className="text-sm text-secondary leading-relaxed italic">
                   Receberá uma notificação no telemóvel para confirmar o pagamento. Certifique-se de que o número está correcto e tem saldo suficiente.
+                </p>
+              </div>
+            )}
+            {paymentMethod === "delivery" && (
+              <div className="p-5 border border-dashed border-outline-variant rounded-lg">
+                <p className="text-sm text-secondary leading-relaxed italic">
+                  O pedido será enviado por WhatsApp. Pague em dinheiro ao nosso entregador no momento da entrega.
                 </p>
               </div>
             )}
@@ -556,11 +599,11 @@ export default function CheckoutPage() {
               {step === "processing" ? (
                 <>
                   <span className="material-symbols-outlined text-xl animate-spin">progress_activity</span>
-                  {paymentMethod === "mcx" ? "A aguardar confirmação..." : "A gerar referência..."}
+                  {paymentMethod === "mcx" ? "A aguardar confirmação..." : paymentMethod === "delivery" ? "A processar..." : "A gerar referência..."}
                 </>
               ) : (
                 <>
-                  Confirmar Pedido
+                  {paymentMethod === "delivery" ? "Enviar Pedido por WhatsApp" : "Confirmar Pedido"}
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </>
               )}

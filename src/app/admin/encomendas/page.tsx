@@ -80,13 +80,22 @@ export default function EncomendasPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl lg:text-3xl font-[family-name:var(--font-headline)] text-on-surface mb-1">
-          Encomendas
-        </h1>
-        <p className="text-secondary text-sm">
-          Gestão de pedidos e entregas
-        </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-[family-name:var(--font-headline)] text-on-surface mb-1">
+            Encomendas
+          </h1>
+          <p className="text-secondary text-sm">
+            Gestão de pedidos e entregas
+          </p>
+        </div>
+        <button
+          onClick={loadOrders}
+          disabled={loading}
+          className="p-3 rounded-lg bg-surface-container-lowest text-secondary hover:text-primary hover:bg-primary/5 transition-all active:scale-95 disabled:opacity-50"
+        >
+          <span className={`material-symbols-outlined text-xl ${loading ? "animate-spin" : ""}`}>refresh</span>
+        </button>
       </div>
 
       {/* Stats */}
